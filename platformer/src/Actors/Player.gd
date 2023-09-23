@@ -47,9 +47,13 @@ func _physics_process(_delta):
 	if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
 		sound_jump.play()
 
+	var max_velocity = max_velocity_walking
+	if Input.is_action_pressed("Sprint" + action_suffix):
+		max_velocity = max_velocity_sprinting
+
 	var direction = get_direction()
 
-	_velocity = calculate_move_velocity(direction, _delta)
+	_velocity = calculate_move_velocity(direction, max_velocity, _delta)
 
 	var snap_vector = Vector2.ZERO
 	if direction.y == 0.0:
@@ -82,6 +86,7 @@ func get_direction():
 # This function calculates a new velocity whenever you need it.
 func calculate_move_velocity(
 		direction,
+		max_velocity,
 		delta
 	):
 	var velocity = _velocity
