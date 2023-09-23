@@ -11,11 +11,10 @@ export(String) var action_suffix = ""
 
 onready var platform_detector = $PlatformDetector
 onready var animation_player = $AnimationPlayer
-onready var shoot_timer = $ShootAnimation
 onready var sprite = $Sprite
 onready var sound_jump = $Jump
-onready var gun = sprite.get_node(@"Gun")
 
+var direction_prev
 
 func _ready():
 	# Static types are necessary here to avoid warnings.
@@ -58,7 +57,7 @@ func _physics_process(_delta):
 	var direction = get_direction()
 
 	var is_jump_interrupted = Input.is_action_just_released("jump" + action_suffix) and _velocity.y < 0.0
-	_velocity = calculate_move_velocity(_velocity, direction, speed, is_jump_interrupted)
+	_velocity = calculate_move_velocity(direction, _delta, is_jump_interrupted)
 
 	var snap_vector = Vector2.ZERO
 	if direction.y == 0.0:
@@ -76,20 +75,6 @@ func _physics_process(_delta):
 		else:
 			sprite.scale.x = -1
 
-	# We use the sprite's scale to store Robi’s look direction which allows us to shoot
-	# bullets forward.
-	# There are many situations like these where you can reuse existing properties instead of
-	# creating new variables.
-	var is_shooting = false
-	if Input.is_action_just_pressed("shoot" + action_suffix):
-		is_shooting = gun.shoot(sprite.scale.x)
-
-	var animation = get_new_animation(is_shooting)
-	if animation != animation_player.current_animation and shoot_timer.is_stopped():
-		if is_shooting:
-			shoot_timer.start()
-		animation_player.play(animation)
-
 
 func get_direction():
 	return Vector2(
@@ -101,19 +86,31 @@ func get_direction():
 # This function calculates a new velocity whenever you need it.
 # It allows you to interrupt jumps.
 func calculate_move_velocity(
-		linear_velocity,
 		direction,
-		speed,
+		delta,
 		is_jump_interrupted
 	):
-	var velocity = linear_velocity
-	velocity.x = speed.x * direction.x
+	var velocity = _velocity
+	
+	# Horizontal velocity
+	if direction != direction_prev:
+		direction_prev = direction
+		velocity.x = base_velocity * direction.x
+	if abs(velocity.x) > abs(max_velocity):
+		velocity.x = max_velocity * direction.x
+	elif abs(velocity.x) != abs(max_velocity):
+		velocity.x += acceleration * direction.x * delta
+	
+	print("player velocity x: ", velocity.x)
+	
+	# Vertical velocity
 	if direction.y != 0.0:
-		velocity.y = speed.y * direction.y
+		velocity.y = jump_force * direction.y
 	if is_jump_interrupted:
 		# Decrease the Y velocity by multiplying it, but don't set it to 0
 		# as to not be too abrupt.
 		velocity.y *= 0.6
+		
 	return velocity
 
 
