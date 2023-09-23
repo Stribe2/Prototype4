@@ -6,10 +6,11 @@ extends Actor
 signal collect_coin()
 
 const FLOOR_DETECT_DISTANCE = 20.0
-
 # sloope threshold in radians. 
 # Anything greater will be treated like a wall: player slides down and can't jump from it
-const SLOPE_THRESHOLD = 0.9 
+const SLOPE_THRESHOLD = 0.9
+const MAX_SAFE_FALL_SPEED = 200.0
+
 
 export(String) var action_suffix = ""
 
@@ -19,6 +20,8 @@ onready var sprite = $Sprite
 onready var sound_jump = $Jump
 
 var direction_prev
+var is_airborne = false
+var fall_speed = 0.0
 
 func _ready():
 	# Static types are necessary here to avoid warnings.
@@ -43,13 +46,28 @@ func _ready():
 # 4. Updates the sprite direction.
 # 6. Updates the animation.
 func _physics_process(_delta):
-	# Play jump sound
+
+	if is_airborne:
+		if _velocity.y > fall_speed:
+			fall_speed = _velocity.y
+		if is_on_floor():
+			is_airborne = false
+			if fall_speed > MAX_SAFE_FALL_SPEED:
+				print("Ouch, you fell kinda far! (", fall_speed, ")")
+				# TODO: Loose health
+				# TODO: Fall prone for a few seconds
+			fall_speed = 0.0
+		
+	if not is_on_floor():
+		is_airborne = true
+	
 	if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
 		sound_jump.play()
 
 	var max_velocity = max_velocity_walking
 	if Input.is_action_pressed("Sprint" + action_suffix):
 		max_velocity = max_velocity_sprinting
+		# play sprint animation
 
 	var direction = get_direction()
 
@@ -69,7 +87,6 @@ func _physics_process(_delta):
 			sprite.scale.x = 1
 		else:
 			sprite.scale.x = -1
-			
 
 	var animation = get_new_animation()
 	if animation != animation_player.current_animation:
