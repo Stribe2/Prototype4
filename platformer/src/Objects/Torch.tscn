@@ -1,0 +1,82 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://src/Objects/Torch.gd" type="Script" id=1]
+[ext_resource path="res://assets/art/torch/Torch_Sheet.png" type="Texture" id=2]
+[ext_resource path="res://assets/art/torch/TorchLight.png" type="Texture" id=3]
+[ext_resource path="res://assets/art/torch/Torch_Unlit.png" type="Texture" id=5]
+
+[sub_resource type="GDScript" id=9]
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 8, 14 )
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 2 )
+region = Rect2( 64, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 32, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 64, 32, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ) ],
+"loop": true,
+"name": "Lit",
+"speed": 4.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "Unlit",
+"speed": 5.0
+} ]
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 65.1153
+
+[node name="Torch" type="Light2D"]
+texture = ExtResource( 3 )
+color = Color( 0.843137, 0.572549, 0.109804, 1 )
+shadow_enabled = true
+script = ExtResource( 1 )
+
+[node name="TorchArea" type="Area2D" parent="."]
+script = SubResource( 9 )
+
+[node name="TouchBox" type="CollisionShape2D" parent="TorchArea"]
+shape = SubResource( 8 )
+
+[node name="AnimatedTorch" type="AnimatedSprite" parent="."]
+frames = SubResource( 7 )
+animation = "Unlit"
+
+[node name="LightTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="HealthArea" type="Area2D" parent="."]
+
+[node name="HealthBox" type="CollisionShape2D" parent="HealthArea"]
+shape = SubResource( 10 )
+
+[connection signal="body_entered" from="TorchArea" to="." method="_on_TorchArea_body_entered"]
+[connection signal="body_exited" from="TorchArea" to="." method="_on_TorchArea_body_exited"]
+[connection signal="timeout" from="LightTimer" to="." method="_on_LightTimer_timeout"]
+[connection signal="body_entered" from="HealthArea" to="." method="_on_HealthArea_body_entered"]
+[connection signal="body_exited" from="HealthArea" to="." method="_on_HealthArea_body_exited"]
