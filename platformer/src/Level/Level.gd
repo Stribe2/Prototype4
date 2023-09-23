@@ -15,3 +15,9 @@ func _ready():
 			camera.limit_top = LIMIT_TOP
 			camera.limit_right = LIMIT_RIGHT
 			camera.limit_bottom = LIMIT_BOTTOM
+			
+	# Muted the game audio for playtesting. Comment out when exporting
+	# Begin region Game Audio Mute ===================================
+	var master_sound = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(master_sound, true)
+	# End region Game Audio Mute =====================================

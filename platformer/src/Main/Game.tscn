@@ -12,9 +12,10 @@ script = ExtResource( 2 )
 [node name="Level" parent="." instance=ExtResource( 3 )]
 
 [node name="Player" parent="Level" instance=ExtResource( 4 )]
-position = Vector2( 90, 546 )
+position = Vector2( 50, 410 )
 
 [node name="InterfaceLayer" type="CanvasLayer" parent="."]
 layer = 100
+visible = false
 
 [node name="PauseMenu" parent="InterfaceLayer" instance=ExtResource( 1 )]
