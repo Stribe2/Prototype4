@@ -6,7 +6,7 @@ extends KinematicBody2D
 export var base_velocity = 15.0
 export var acceleration = 125.0
 export var max_velocity = 50.0
-export var jump_force = 200.0
+export var jump_force = 100.0
 # export var speed = Vector2(150.0, 350.0)
 onready var gravity = ProjectSettings.get("physics/2d/default_gravity")
 

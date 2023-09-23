@@ -56,16 +56,15 @@ func _physics_process(_delta):
 
 	var direction = get_direction()
 
-	var is_jump_interrupted = Input.is_action_just_released("jump" + action_suffix) and _velocity.y < 0.0
-	_velocity = calculate_move_velocity(direction, _delta, is_jump_interrupted)
+	_velocity = calculate_move_velocity(direction, _delta)
 
 	var snap_vector = Vector2.ZERO
 	if direction.y == 0.0:
 		snap_vector = Vector2.DOWN * FLOOR_DETECT_DISTANCE
 	var is_on_platform = platform_detector.is_colliding()
-	_velocity = move_and_slide_with_snap(
+	_velocity.y = move_and_slide_with_snap(
 		_velocity, snap_vector, FLOOR_NORMAL, not is_on_platform, 4, 0.9, false
-	)
+	).y
 
 	# When the character’s direction changes, we want to to scale the Sprite accordingly to flip it.
 	# This will make Robi face left or right depending on the direction you move.
@@ -87,8 +86,7 @@ func get_direction():
 # It allows you to interrupt jumps.
 func calculate_move_velocity(
 		direction,
-		delta,
-		is_jump_interrupted
+		delta
 	):
 	var velocity = _velocity
 	
@@ -101,15 +99,9 @@ func calculate_move_velocity(
 	elif abs(velocity.x) != abs(max_velocity):
 		velocity.x += acceleration * direction.x * delta
 	
-	print("player velocity x: ", velocity.x)
-	
 	# Vertical velocity
 	if direction.y != 0.0:
 		velocity.y = jump_force * direction.y
-	if is_jump_interrupted:
-		# Decrease the Y velocity by multiplying it, but don't set it to 0
-		# as to not be too abrupt.
-		velocity.y *= 0.6
 		
 	return velocity
 
