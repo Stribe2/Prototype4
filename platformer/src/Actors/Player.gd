@@ -56,10 +56,8 @@ func _physics_process(_delta):
 		if is_on_floor():
 			is_airborne = false
 			if fall_speed > MAX_SAFE_FALL_SPEED:
-				print("Ouch, you fell kinda far! (", fall_speed, ")")
 				is_prone = true
 				# TODO: loose health
-				# TODO: fall prone for a few seconds
 			fall_speed = 0.0
 	
 	
@@ -71,6 +69,7 @@ func _physics_process(_delta):
 			prone_timer += _delta
 		else:
 			is_prone = false
+			prone_timer = 0.0
 	else:
 		if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
 			sound_jump.play()
@@ -78,7 +77,6 @@ func _physics_process(_delta):
 		var max_velocity = max_velocity_walking
 		if Input.is_action_pressed("Sprint" + action_suffix):
 			max_velocity = max_velocity_sprinting
-			# TODO: play sprint animation
 			# TODO: drain health
 
 		var direction = get_direction()
