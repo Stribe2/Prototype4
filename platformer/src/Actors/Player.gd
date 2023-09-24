@@ -134,7 +134,7 @@ func get_new_animation():
 			animation_new = "idle"
 	else:
 		if _velocity.y > 0:
-			animation_new = "falling"
+			animation_new = "fall"
 		else:
-			animation_new = "jumping"
+			animation_new = "jump"
 	return animation_new
