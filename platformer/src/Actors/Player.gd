@@ -64,7 +64,8 @@ func _physics_process(_delta):
 	if not is_on_floor():
 		is_airborne = true
 	
-	if is_prone:
+	#Disables all movement (x & y) so it could cause a bug if they should continue falling while prone
+	if is_prone: 
 		if prone_timer < prone_time:
 			prone_timer += _delta
 		else:

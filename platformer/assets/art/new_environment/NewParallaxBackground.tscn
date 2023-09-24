@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/art/new_environment/platset1_01 background.png" type="Texture" id=1]
+[ext_resource path="res://assets/art/new_environment/platset1_02 background.png" type="Texture" id=2]
+[ext_resource path="res://assets/art/new_environment/platset1_03 background A.png" type="Texture" id=3]
+
+[node name="NewParallaxBackground" type="ParallaxBackground"]
+offset = Vector2( 0, -600 )
+scale = Vector2( 2, 4 )
+transform = Transform2D( 2, 0, 0, 4, 0, -600 )
+scroll_base_scale = Vector2( 0.4, 0.1 )
+scroll_ignore_camera_zoom = true
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2( 0.8, 0.8 )
+motion_mirroring = Vector2( 426, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxLayer"]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 426, 384 )
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="."]
+position = Vector2( 0, -50 )
+motion_mirroring = Vector2( 426, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxLayer2"]
+texture = ExtResource( 2 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 426, 384 )
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="."]
+motion_scale = Vector2( 1.5, 1.5 )
+motion_mirroring = Vector2( 426, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxLayer3"]
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 426, 384 )
