@@ -54,8 +54,8 @@ func _physics_process(_delta):
 			is_airborne = false
 			if fall_speed > MAX_SAFE_FALL_SPEED:
 				print("Ouch, you fell kinda far! (", fall_speed, ")")
-				# TODO: Loose health
-				# TODO: Fall prone for a few seconds
+				# TODO: loose health
+				# TODO: fall prone for a few seconds
 			fall_speed = 0.0
 		
 	if not is_on_floor():
@@ -67,7 +67,8 @@ func _physics_process(_delta):
 	var max_velocity = max_velocity_walking
 	if Input.is_action_pressed("Sprint" + action_suffix):
 		max_velocity = max_velocity_sprinting
-		# play sprint animation
+		# TODO: play sprint animation
+		# TODO: drain health
 
 	var direction = get_direction()
 
