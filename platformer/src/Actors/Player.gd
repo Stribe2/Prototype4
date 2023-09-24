@@ -22,6 +22,9 @@ onready var sound_jump = $Jump
 var direction_prev
 var is_airborne = false
 var fall_speed = 0.0
+var is_prone = false
+var prone_time = 1.5 # hardcoded to length of prone animation
+var prone_timer = 0.0
 
 func _ready():
 	# Static types are necessary here to avoid warnings.
@@ -53,40 +56,47 @@ func _physics_process(_delta):
 		if is_on_floor():
 			is_airborne = false
 			if fall_speed > MAX_SAFE_FALL_SPEED:
-				print("Ouch, you fell kinda far! (", fall_speed, ")")
-				# TODO: Loose health
-				# TODO: Fall prone for a few seconds
+				is_prone = true
+				# TODO: loose health
 			fall_speed = 0.0
-		
+	
+	
 	if not is_on_floor():
 		is_airborne = true
 	
-	if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
-		sound_jump.play()
-
-	var max_velocity = max_velocity_walking
-	if Input.is_action_pressed("Sprint" + action_suffix):
-		max_velocity = max_velocity_sprinting
-		# play sprint animation
-
-	var direction = get_direction()
-
-	_velocity = calculate_move_velocity(direction, max_velocity, _delta)
-
-	var snap_vector = Vector2.ZERO
-	if direction.y == 0.0:
-		snap_vector = Vector2.DOWN * FLOOR_DETECT_DISTANCE
-	var is_on_platform = platform_detector.is_colliding()
-	_velocity.y = move_and_slide_with_snap(
-		_velocity, snap_vector, FLOOR_NORMAL, not is_on_platform, 4, SLOPE_THRESHOLD, false
-	).y
-
-	# Flip character sprite so it faces the move direction
-	if direction.x != 0:
-		if direction.x > 0:
-			sprite.scale.x = 1
+	if is_prone:
+		if prone_timer < prone_time:
+			prone_timer += _delta
 		else:
-			sprite.scale.x = -1
+			is_prone = false
+			prone_timer = 0.0
+	else:
+		if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
+			sound_jump.play()
+
+		var max_velocity = max_velocity_walking
+		if Input.is_action_pressed("Sprint" + action_suffix):
+			max_velocity = max_velocity_sprinting
+			# TODO: drain health
+
+		var direction = get_direction()
+
+		_velocity = calculate_move_velocity(direction, max_velocity, _delta)
+
+		var snap_vector = Vector2.ZERO
+		if direction.y == 0.0:
+			snap_vector = Vector2.DOWN * FLOOR_DETECT_DISTANCE
+		var is_on_platform = platform_detector.is_colliding()
+		_velocity.y = move_and_slide_with_snap(
+			_velocity, snap_vector, FLOOR_NORMAL, not is_on_platform, 4, SLOPE_THRESHOLD, false
+		).y
+
+		# Flip character sprite so it faces the move direction
+		if direction.x != 0:
+			if direction.x > 0:
+				sprite.scale.x = 1
+			else:
+				sprite.scale.x = -1
 
 	var animation = get_new_animation()
 	if animation != animation_player.current_animation:
@@ -127,13 +137,17 @@ func calculate_move_velocity(
 func get_new_animation():
 	var animation_new = ""
 	if is_on_floor():
-		if abs(_velocity.x) > 0.1:
-			animation_new = "run"
+		if is_prone:
+			animation_new = "prone"
+		elif abs(_velocity.x) > 0.1:
+			animation_new = "walk"
+			if abs(_velocity.x) > max_velocity_walking:
+				animation_new = "run"
 		else:
 			animation_new = "idle"
 	else:
 		if _velocity.y > 0:
-			animation_new = "falling"
+			animation_new = "fall"
 		else:
-			animation_new = "jumping"
+			animation_new = "jump"
 	return animation_new
