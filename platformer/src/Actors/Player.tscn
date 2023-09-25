@@ -1,8 +1,11 @@
-[gd_scene load_steps=15 format=2]
+
+[gd_scene load_steps=20 format=2]
+
 
 [ext_resource path="res://src/Actors/Player.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/HoodedCharacter.png" type="Texture" id=2]
 [ext_resource path="res://assets/audio/sfx/jump.wav" type="AudioStream" id=3]
+[ext_resource path="res://src/Actors/Health.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/art/ui/touch_button_left.png" type="Texture" id=5]
 [ext_resource path="res://assets/art/ui/touch_button_right.png" type="Texture" id=6]
 [ext_resource path="res://assets/art/ui/touch_button_jump.png" type="Texture" id=7]
@@ -186,3 +189,9 @@ scale = Vector2( 1.49157, 1.46265 )
 normal = ExtResource( 8 )
 action = "shoot"
 visibility_mode = 1
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="Health" parent="HUDLayer" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
