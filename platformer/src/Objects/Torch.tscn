@@ -51,6 +51,8 @@ animations = [ {
 radius = 65.1153
 
 [node name="Torch" type="Light2D"]
+position = Vector2( -30, 30 )
+scale = Vector2( 0.53125, 0.53125 )
 texture = ExtResource( 3 )
 color = Color( 0.843137, 0.572549, 0.109804, 1 )
 shadow_enabled = true

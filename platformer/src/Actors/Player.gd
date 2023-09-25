@@ -18,7 +18,7 @@ onready var platform_detector = $PlatformDetector
 onready var animation_player = $AnimationPlayer
 onready var sprite = $Sprite
 onready var sound_jump = $Jump
-
+onready var health_bar = $HUDLayer/Health/Healthbar
 var direction_prev
 var is_airborne = false
 var fall_speed = 0.0
@@ -54,7 +54,7 @@ func _physics_process(_delta):
 			is_airborne = false
 			if fall_speed > MAX_SAFE_FALL_SPEED:
 				print("Ouch, you fell kinda far! (", fall_speed, ")")
-				# TODO: Loose health
+				health_bar.value -= 20 # takes damage when falling far
 				# TODO: Fall prone for a few seconds
 			fall_speed = 0.0
 		

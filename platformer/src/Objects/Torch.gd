@@ -1,14 +1,14 @@
 extends Light2D
 
 
-# Declare member variables here.
+
 var is_player_nearby = false
 var is_lit = false # for health(sanity)
+var is_in_healing_distance = false
 onready var torch_animation = $AnimatedTorch
 onready var light_Timer = $LightTimer
 onready var torch_Area = $TorchArea
 
-# Called when the node enters the scene tree for the first time.
 # Sets torch animation to Unlit, disables torch's light
 func _ready():
 	torch_animation.set_animation("Unlit")
@@ -21,11 +21,6 @@ func light_torch():
 	torch_animation.set_animation("Lit")
 	torch_animation.set_playing(true)
 	set_enabled(true)
-
-
-func _process(_delta): 
-	if is_player_nearby && Input.is_action_just_pressed("lit_torch"): 
-		light_torch()
 
 #Player colliding with torch - they are nearby/ close enough to lit it
 func _on_TorchArea_body_entered(_body):
@@ -43,12 +38,17 @@ func _on_TorchArea_body_exited(_body):
 	is_player_nearby = false
 
 #If torch is lit: then start healing, else: do nothing
-func _on_HealthArea_body_entered(body):
-	if is_lit:
-		#health.heal()
-		print_debug("delete this line when health is implemented")
+func _on_HealthArea_body_entered(_body):
+	is_in_healing_distance = true
 
 #If it's over time: stop the healing when exiting:
-func _on_HealthArea_body_exited(body):
-	
-	pass # Replace with function body.
+func _on_HealthArea_body_exited(_body):
+	is_in_healing_distance = false
+	if is_lit:
+		GlobalVar.update_can_be_healed(false)
+# Check if player has interacted with the torch: then if they can be healed
+func _process(_delta): 
+	if is_player_nearby && Input.is_action_just_pressed("lit_torch"): 
+		light_torch()
+	if is_lit && is_in_healing_distance:
+		GlobalVar.update_can_be_healed(true)

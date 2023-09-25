@@ -21,4 +21,10 @@ texture_under = ExtResource( 4 )
 texture_over = ExtResource( 5 )
 texture_progress = ExtResource( 3 )
 
+[node name="HealTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
 [connection signal="timeout" from="HealthTimer" to="." method="_on_HealthTimer_timeout"]
+[connection signal="value_changed" from="Healthbar" to="." method="_on_Healthbar_value_changed"]
+[connection signal="timeout" from="HealTimer" to="." method="_on_Timer_timeout"]
