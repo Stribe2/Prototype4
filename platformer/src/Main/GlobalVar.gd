@@ -14,8 +14,12 @@ func update_can_be_healed(can_heal):
 
 func update_is_game_over(game):
 		is_game_over = game
+
 func get_can_be_healed():
 	return can_be_healed
+	
+func get_is_game_over():
+	return is_game_over
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
