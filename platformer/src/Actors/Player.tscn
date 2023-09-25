@@ -1,7 +1,9 @@
+
 [gd_scene load_steps=20 format=2]
 
+
 [ext_resource path="res://src/Actors/Player.gd" type="Script" id=1]
-[ext_resource path="res://assets/art/player/robot_demo.png" type="Texture" id=2]
+[ext_resource path="res://assets/art/player/HoodedCharacter.png" type="Texture" id=2]
 [ext_resource path="res://assets/audio/sfx/jump.wav" type="AudioStream" id=3]
 [ext_resource path="res://src/Actors/Health.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/art/ui/touch_button_left.png" type="Texture" id=5]
@@ -9,26 +11,8 @@
 [ext_resource path="res://assets/art/ui/touch_button_jump.png" type="Texture" id=7]
 [ext_resource path="res://assets/art/ui/touch_button_fire.png" type="Texture" id=8]
 
-[sub_resource type="Animation" id=1]
-resource_name = "crouch"
-length = 0.01
-loop = true
-step = 0.25
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 22 ]
-}
-
 [sub_resource type="Animation" id=2]
-resource_name = "falling"
+resource_name = "fall"
 length = 0.01
 loop = true
 step = 0.25
@@ -42,29 +26,11 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ 21 ]
-}
-
-[sub_resource type="Animation" id=3]
-resource_name = "falling_weapon"
-length = 0.5
-loop = true
-step = 0.25
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 26 ]
+"values": [ 46 ]
 }
 
 [sub_resource type="Animation" id=4]
-length = 7.0
+length = 2.0
 loop = true
 step = 0.25
 tracks/0/type = "value"
@@ -74,47 +40,14 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1.25, 1.5, 2, 4.5, 4.75, 5, 5.25 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 16, 17, 18, 16, 19, 20, 19, 16 ]
-}
-
-[sub_resource type="Animation" id=5]
-length = 0.5
-loop = true
-step = 0.25
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 25 ]
+"values": [ 0, 1 ]
 }
 
 [sub_resource type="Animation" id=6]
-length = 0.5
-loop = true
-step = 0.25
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 1,
-"values": [ 23, 24, 23 ]
-}
-
-[sub_resource type="Animation" id=7]
+resource_name = "jump"
 length = 0.5
 loop = true
 step = 0.25
@@ -128,11 +61,27 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ 26 ]
+"values": [ 42 ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "prone"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 3, 3.4, 3.8, 4.3, 4.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 59, 61, 62, 63, 60, 59, 58, 57, 56 ]
 }
 
 [sub_resource type="Animation" id=8]
-length = 1.25
+length = 2.1
 loop = true
 step = 0.25
 tracks/0/type = "value"
@@ -142,16 +91,16 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5, 0.75, 1, 1.25 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 0, 1, 2, 3, 4, 0 ]
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 24, 31 ]
 }
 
-[sub_resource type="Animation" id=9]
-length = 1.25
+[sub_resource type="Animation" id=12]
+resource_name = "walk"
+length = 1.2
 loop = true
-step = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -159,27 +108,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5, 0.75, 1, 1.25 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.3, 0.6, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 5, 6, 7, 8, 9, 5 ]
-}
-
-[sub_resource type="Animation" id=10]
-length = 1.25
-loop = true
-step = 0.25
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5, 0.75, 1, 1.25 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 10, 11, 12, 13, 14, 5 ]
+"values": [ 16, 17, 18, 19 ]
 }
 
 [sub_resource type="RectangleShape2D" id=11]
@@ -197,22 +129,18 @@ collision_mask = 8
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, -14 )
 texture = ExtResource( 2 )
-hframes = 16
-vframes = 2
-frame = 16
+hframes = 8
+vframes = 9
+frame = 56
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 2.6
-anims/crouch = SubResource( 1 )
-anims/falling = SubResource( 2 )
-anims/falling_weapon = SubResource( 3 )
+anims/fall = SubResource( 2 )
 anims/idle = SubResource( 4 )
-anims/idle_weapon = SubResource( 5 )
-anims/jumping = SubResource( 6 )
-anims/jumping_weapon = SubResource( 7 )
+anims/jump = SubResource( 6 )
+anims/prone = SubResource( 13 )
 anims/run = SubResource( 8 )
-anims/run_weapon = SubResource( 9 )
-anims/standing_weapon_ready = SubResource( 10 )
+anims/walk = SubResource( 12 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 0, -28 )
