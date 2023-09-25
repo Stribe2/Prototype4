@@ -96,7 +96,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=12]
 resource_name = "walk"
-length = 1.2
+length = 2.0
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -105,14 +105,14 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.3, 0.6, 0.9 ),
+"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 16, 17, 18, 19 ]
 }
 
 [sub_resource type="RectangleShape2D" id=11]
-extents = Vector2( 10, 14 )
+extents = Vector2( 4, 14 )
 
 [node name="Player" type="KinematicBody2D"]
 collision_mask = 30
@@ -128,7 +128,7 @@ position = Vector2( 0, -14 )
 texture = ExtResource( 2 )
 hframes = 8
 vframes = 9
-frame = 56
+frame = 19
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 2.6

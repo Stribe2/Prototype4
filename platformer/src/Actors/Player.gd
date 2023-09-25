@@ -25,6 +25,7 @@ var fall_speed = 0.0
 var is_prone = false
 var prone_time = 1.5 # hardcoded to length of prone animation
 var prone_timer = 0.0
+var is_climbing = false
 
 func _ready():
 	# Static types are necessary here to avoid warnings.
@@ -42,14 +43,63 @@ func _ready():
 
 
 # Physics process is a built-in loop in Godot that is called every frame.
-# At a glance, you can see that the physics process loop:
-# 1. Calculates the move direction.
-# 2. Calculates the move velocity.
-# 3. Moves the character.
-# 4. Updates the sprite direction.
-# 6. Updates the animation.
 func _physics_process(_delta):
+	handle_falling()
+	handle_movement(_delta)
+	handle_animation()
 
+
+
+func get_direction():
+	return Vector2(
+		Input.get_action_strength("move_right" + action_suffix) - Input.get_action_strength("move_left" + action_suffix),
+		-1 if is_on_floor() and Input.is_action_just_pressed("jump" + action_suffix) else 0
+	)
+
+func handle_movement(delta):
+	# Being prone disables all movement (x & y) so it could 
+	# cause a bug if they should continue falling while prone
+	if is_prone:
+		handle_prone(delta)
+		return
+	if is_climbing: # movement disabled while climbing
+		return
+	
+	# Get input
+	if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
+		sound_jump.play()
+	var max_velocity = max_velocity_walking
+	if Input.is_action_pressed("Sprint" + action_suffix):
+		max_velocity = max_velocity_sprinting
+		# TODO: drain health
+	var direction = get_direction()
+
+	# Act on input
+	_velocity = calculate_move_velocity(direction, max_velocity, delta)
+
+	var snap_vector = Vector2.ZERO
+	if direction.y == 0.0:
+		snap_vector = Vector2.DOWN * FLOOR_DETECT_DISTANCE
+	var is_on_platform = platform_detector.is_colliding()
+	_velocity.y = move_and_slide_with_snap(
+		_velocity, snap_vector, FLOOR_NORMAL, not is_on_platform, 4, SLOPE_THRESHOLD, false
+	).y
+
+	# Flip character sprite so it faces the move direction
+	if direction.x != 0:
+		if direction.x > 0:
+			sprite.scale.x = 1
+		else:
+			sprite.scale.x = -1
+
+func handle_prone(delta):
+	if prone_timer < prone_time:
+		prone_timer += delta
+	else:
+		is_prone = false
+		prone_timer = 0.0
+
+func handle_falling():
 	if is_airborne:
 		if _velocity.y > fall_speed:
 			fall_speed = _velocity.y
@@ -59,57 +109,8 @@ func _physics_process(_delta):
 				is_prone = true
 				# TODO: loose health
 			fall_speed = 0.0
-	
-	
 	if not is_on_floor():
 		is_airborne = true
-	
-	#Disables all movement (x & y) so it could cause a bug if they should continue falling while prone
-	if is_prone: 
-		if prone_timer < prone_time:
-			prone_timer += _delta
-		else:
-			is_prone = false
-			prone_timer = 0.0
-	else:
-		if Input.is_action_just_pressed("jump" + action_suffix) and is_on_floor():
-			sound_jump.play()
-
-		var max_velocity = max_velocity_walking
-		if Input.is_action_pressed("Sprint" + action_suffix):
-			max_velocity = max_velocity_sprinting
-			# TODO: drain health
-
-		var direction = get_direction()
-
-		_velocity = calculate_move_velocity(direction, max_velocity, _delta)
-
-		var snap_vector = Vector2.ZERO
-		if direction.y == 0.0:
-			snap_vector = Vector2.DOWN * FLOOR_DETECT_DISTANCE
-		var is_on_platform = platform_detector.is_colliding()
-		_velocity.y = move_and_slide_with_snap(
-			_velocity, snap_vector, FLOOR_NORMAL, not is_on_platform, 4, SLOPE_THRESHOLD, false
-		).y
-
-		# Flip character sprite so it faces the move direction
-		if direction.x != 0:
-			if direction.x > 0:
-				sprite.scale.x = 1
-			else:
-				sprite.scale.x = -1
-
-	var animation = get_new_animation()
-	if animation != animation_player.current_animation:
-		animation_player.play(animation)
-
-
-func get_direction():
-	return Vector2(
-		Input.get_action_strength("move_right" + action_suffix) - Input.get_action_strength("move_left" + action_suffix),
-		-1 if is_on_floor() and Input.is_action_just_pressed("jump" + action_suffix) else 0
-	)
-
 
 # This function calculates a new velocity whenever you need it.
 func calculate_move_velocity(
@@ -134,6 +135,10 @@ func calculate_move_velocity(
 		
 	return velocity
 
+func handle_animation():
+	var animation = get_new_animation()
+	if animation != animation_player.current_animation:
+		animation_player.play(animation)
 
 func get_new_animation():
 	var animation_new = ""
