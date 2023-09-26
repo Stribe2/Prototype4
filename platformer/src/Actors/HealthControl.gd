@@ -27,11 +27,9 @@ func heal(time_left):
 		time -= 1
 		heal_timer.start()
 		if health_bar.value > 0:
-			health_bar.value += 1
-			print_debug("you have been healed")
+			health_bar.value += 5
 	if(time == 0):
 		health_timer.paused = false
-		print_debug("we resume health consumption")
 		
 func stop_heal():
 	heal_timer.paused = false
@@ -50,7 +48,6 @@ func _assign_color(health):
 func _on_HealthTimer_timeout():
 	if health_bar.value > 0:
 		health_bar.value -= 5
-		print_debug("health_bar value: ", health_bar.value)
 
 func _on_Timer_timeout():
 	heal(time)

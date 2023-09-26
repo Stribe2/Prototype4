@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/UserInterface/PauseMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Main/Game.gd" type="Script" id=2]
 [ext_resource path="res://src/Level/Level.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/Actors/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/Objects/Torch.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/Objects/Ladder.tscn" type="PackedScene" id=9]
 
 [node name="Game" type="Node"]
@@ -18,8 +19,14 @@ position = Vector2( 4, 408 )
 [node name="Ladder" parent="Level" instance=ExtResource( 9 )]
 position = Vector2( 399, 427 )
 
+[node name="Torch2" parent="Level" instance=ExtResource( 5 )]
+position = Vector2( 225, 523 )
+
 [node name="InterfaceLayer" type="CanvasLayer" parent="."]
 layer = 100
 visible = false
 
 [node name="PauseMenu" parent="InterfaceLayer" instance=ExtResource( 1 )]
+
+[node name="Torch" parent="." instance=ExtResource( 5 )]
+position = Vector2( 505, 302 )
